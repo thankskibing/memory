@@ -1,7 +1,7 @@
 from openai import OpenAI
 import streamlit as st
 
-st.set_page_config(page_title="탐방GO 챗봇")
+st.set_page_config(page_title="기억산책 챗봇")
 st.image("logo.png", width=100)
 st.title("기억산책 챗봇")
 # st.caption("안녕하세요! 저는 기억산책의 친구봇 ‘기억이’예요. 궁금한 점이나 어디로 갈지 고민이라면 언제든 물어보세요!😊")
