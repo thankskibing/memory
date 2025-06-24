@@ -7,9 +7,7 @@ st.title("기억산책 챗봇")
 # st.caption("안녕하세요! 저는 기억산책의 친구봇 ‘기억이’예요. 궁금한 점이나 어디로 갈지 고민이라면 언제든 물어보세요!😊")
 
 # ——— 1) CSS 인라인 정의 ———
-st.markdown(
-    unsafe_allow_html=True
-)
+st.markdown(st.markdown("..."))
 
 # ——— 2) OpenAI 클라이언트 초기화 ———
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
