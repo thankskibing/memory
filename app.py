@@ -10,24 +10,25 @@ st.markdown(
     """
     <style>
     .chat-bubble {
+        display: inline-block;
         padding: 12px 16px;
         margin: 8px 0;
         border-radius: 12px;
-        max-width: 80%;
         line-height: 1.5;
         word-wrap: break-word;
+        max-width: 80%;
     }
     .user-bubble {
         background-color: #DCF8C6;
-        align-self: flex-end;
-        text-align: right;
+        text-align: left;
         margin-left: auto;
+        border-bottom-right-radius: 0px;
     }
     .assistant-bubble {
         background-color: #F1F0F0;
-        align-self: flex-start;
         text-align: left;
         margin-right: auto;
+        border-bottom-left-radius: 0px;
     }
     </style>
     """,
