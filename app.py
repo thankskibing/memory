@@ -71,7 +71,7 @@ if "messages" not in st.session_state:
     ]
 
 # ✅ 히스토리 렌더링
-f# 전체 대화 출력 영역 감싸기
+# 전체 대화 출력 영역 감싸기
 st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 
 for msg in st.session_state.messages[1:]:
