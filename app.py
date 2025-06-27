@@ -13,12 +13,12 @@ st.markdown("""
 .chat-container {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 10px 0 90px;
+    padding-bottom: 90px;
 }
 
 .chat-wrapper {
     display: flex;
+    margin-bottom: 20px;  /* 👈 말풍선 간 거리 */
 }
 
 .chat-wrapper.user {
