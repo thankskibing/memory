@@ -1,53 +1,60 @@
 from openai import OpenAI
 import streamlit as st
+import html
 
+# ✅ 페이지 설정
 st.set_page_config(page_title="기억산책 챗봇")
 st.image("logo.png", width=100)
 st.title("기억산책 챗봇")
 
-# ✅ 스타일 정의 - CSS 추가
-st.markdown(
-    """
-    <style>
-    .chat-container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px; /* 말풍선 간 간격 */
-        padding: 10px 0;
-    }
+# ✅ 스타일 정의 - 왼/오 정렬용
+st.markdown("""
+<style>
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 10px 0 90px;
+}
 
-    .chat-bubble {
-        display: inline-block;
-        padding: 12px 16px;
-        border-radius: 16px;
-        line-height: 1.5;
-        word-wrap: break-word;
-        max-width: 80%;
-        font-size: 16px;
-    }
+.chat-wrapper {
+    display: flex;
+}
 
-    .user-bubble {
-        background-color: #DCF8C6;
-        align-self: flex-end;
-        text-align: left;
-        border-bottom-right-radius: 0px;
-    }
+.chat-wrapper.user {
+    justify-content: flex-end;
+}
 
-    .assistant-bubble {
-        background-color: #F1F0F0;
-        align-self: flex-start;
-        text-align: left;
-        border-bottom-left-radius: 0px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+.chat-wrapper.assistant {
+    justify-content: flex-start;
+}
+
+.chat-bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+    max-width: 80%;
+    line-height: 1.5;
+    font-size: 16px;
+    word-wrap: break-word;
+    display: inline-block;
+}
+
+.user-bubble {
+    background-color: #DCF8C6;
+    border-bottom-right-radius: 0px;
+}
+
+.assistant-bubble {
+    background-color: #F1F0F0;
+    border-bottom-left-radius: 0px;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ✅ OpenAI 설정
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-# ✅ 세션 상태 초기화
+# ✅ 세션 초기화
 if "model" not in st.session_state:
     st.session_state.model = "gpt-3.5-turbo"
 if "openai_model" not in st.session_state:
@@ -66,29 +73,36 @@ welcome_text = "안녕하세요! 저는 기억산책의 친구봇 ‘기억이�
 
 if "messages" not in st.session_state:
     st.session_state.messages = [
-        {"role": "system",    "content": system_message},
+        {"role": "system", "content": system_message},
         {"role": "assistant", "content": welcome_text}
     ]
 
-# ✅ 히스토리 렌더링
-# 전체 대화 출력 영역 감싸기
+# ✅ 메시지 출력
 st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 
 for msg in st.session_state.messages[1:]:
     role = msg["role"]
-    text = msg["content"]
-    if role == "user":
-        st.markdown(f'<div class="chat-bubble user-bubble">{text}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown(f'<div class="chat-bubble assistant-bubble">{text}</div>', unsafe_allow_html=True)
+    text = html.escape(msg["content"])  # 이모지 외 HTML 안전 처리
 
-st.markdown('</div>', unsafe_allow_html=True)  # 닫는 태그
-# ✅ 사용자 입력 받기
+    if role == "user":
+        st.markdown(f'''
+        <div class="chat-wrapper user">
+            <div class="chat-bubble user-bubble">{text}</div>
+        </div>
+        ''', unsafe_allow_html=True)
+    else:
+        st.markdown(f'''
+        <div class="chat-wrapper assistant">
+            <div class="chat-bubble assistant-bubble">{text}</div>
+        </div>
+        ''', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# ✅ 사용자 입력
 if prompt := st.chat_input("무엇을 도와드릴까요?😊"):
     st.session_state.messages.append({"role": "user", "content": prompt})
-    st.markdown(f'<div class="chat-bubble user-bubble">{prompt}</div>', unsafe_allow_html=True)
 
-    # ✅ OpenAI 응답 생성
     stream = client.chat.completions.create(
         model=st.session_state.openai_model,
         messages=st.session_state.messages,
@@ -98,8 +112,6 @@ if prompt := st.chat_input("무엇을 도와드릴까요?😊"):
     assistant_text = ""
     for chunk in stream:
         assistant_text += chunk.choices[0].delta.content or ""
-
-    st.markdown(f'<div class="chat-bubble assistant-bubble">{assistant_text}</div>', unsafe_allow_html=True)
 
     st.session_state.messages.append(
         {"role": "assistant", "content": assistant_text}
