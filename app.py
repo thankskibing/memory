@@ -6,7 +6,7 @@ st.image("logo.png", width=100)
 st.title("기억산책 챗봇")
 
 # ✅ 스타일 정의 - CSS 추가
-sst.markdown(
+st.markdown(
     """
     <style>
     .chat-container {
